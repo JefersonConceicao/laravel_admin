@@ -11,6 +11,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ForgotPassword;
+use App\Mail\ConfirmMail;
+
 use Auth;
 
 //MODELS
@@ -27,9 +29,10 @@ class User extends Authenticatable
         'password',
         'remember_token',
         'setor_id',
-        'autoriza',
         'url_photo',
         'last_login',
+        'mail_token',
+        'active',
     ];
  
     protected $hidden = [
@@ -43,14 +46,6 @@ class User extends Authenticatable
 
     public $timestamps = true;
 
-    /**
-     * 
-     * Virtual field flag active 0 
-     */
-    public function getActiveAttribute($value){
-        return $value == 0 ? "Inativo" : "Ativo";
-    }
-
     public function rolesByUser(){
         return $this->belongsToMany(Role::class);
     }
@@ -59,11 +54,45 @@ class User extends Authenticatable
         return $this->hasOne(Setor::class, 'id', 'setor_id');
     }
 
+    public function signUpUser($request = []){
+        try{
+            if($request['password'] != $request['password_confirmation']){
+               return [
+                   'error' => true,
+                   'msg' => 'Senhas não conferem'
+               ];
+            }
+                
+            $tokenMail = md5(uniqid(rand(), true));
+            $saveUser = $this->fill([
+                'name' => $request['name'],
+                'email' => $request['email'],
+                'password' => Hash::make($request['password']),
+                'mail_token' => $tokenMail
+            ])->save();
+                
+            if($saveUser){
+                Mail::to($request['email'])->send(new confirmMail($tokenMail));
+            }
+            
+            return [
+                'error' => false,
+                'msg' => 'Um link de confirmação de conta foi enviada para o seu e-mail'
+            ];
+        }catch(\Exception $error){
+            return [
+                'error' => true,
+                'msg' => 'Não foi possível efetuar o cadastro, tente novamente mais tarde',
+                'error_msg' => $error->getMessage()
+            ];
+        }
+    }
+
     /**
      * @param string nome 
      * @param string email
-     * @param string id_role
-     * @param string id_setor
+     * @param string role
+     * @param string setor
      *  
      * @return collection users
      */
@@ -138,9 +167,7 @@ class User extends Authenticatable
     
             $objUser->fill([
                 'name' => trim($request['name']),
-                'username' => trim($request['username']),
-                'email' => $request['email'],
-                'setor_id' => $request['setor_id'],
+                'email' => $request['email']
             ]);
 
             if(isset($request['password']) && isset($request['confirm_password'])){
@@ -269,8 +296,7 @@ class User extends Authenticatable
             $userRecovery->remember_token = $rememberToken;
 
             if($userRecovery->save()){
-                dd("teste");
-                Mail::to($userRecover->email)->send(new ForgotPassword($userRecover, $rememberToken));
+                Mail::to($userRecovery->email)->send(new ForgotPassword($userRecovery, $rememberToken));
             }
 
             return [
@@ -280,8 +306,36 @@ class User extends Authenticatable
         }catch(\Exception $error){
             return [
                 'error' => true,
-                'msg' => 'Algo deu errado, tente novamente mais tarde'
+                'msg' => 'Algo deu errado, tente novamente mais tarde',
+                'error_msg' => $error->getMessage()
             ];
         }
     }
+
+    public function putMailToken($email){
+        $resp = false;
+
+        $mailToken = md5(uniqid(rand(), true));
+        $user = $this->where('email', $email)->first();
+
+        $user->mail_token = $mailToken;
+    
+        if($user->save()){
+            $resp = $mailToken;
+        }
+
+        return $resp;
+    }
+
+    public function verifiedMail($token){
+        try{
+            $user = $this->where('mail_token', $token)->first();
+            $user->email_verified_at = date('Y-m-d H:i:s');
+            $user->save();
+
+            return true;
+        }catch(\Exception $error){
+            return false;
+        }
+    }   
 }
