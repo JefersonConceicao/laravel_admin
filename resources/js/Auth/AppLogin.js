@@ -3,11 +3,7 @@ $(function(){
     habilitaEventos();
 })
 
-const loginFacebook = function(){
-    FB.getLoginStatus(function(response){
-        console.log(response);
-    })
-}
+const loginFacebook = function(){}
 
 const habilitaEventos = function() {
     $("#seePass").on('click', function(){

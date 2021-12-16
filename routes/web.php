@@ -1,5 +1,9 @@
 <?php
 Route::get('/permissoes/methodNotAllowed', 'PermissoesController@renderNotAllowed')->name('methodNotAllowed');
+Route::get('/testeTemplateMail', function(){
+    return view('mails.verify_mail');
+});
+
 Route::get('/', function () {
     return redirect('/login');
 });

@@ -35956,11 +35956,7 @@ $(function () {
   habilitaEventos();
 });
 
-var loginFacebook = function loginFacebook() {
-  FB.getLoginStatus(function (response) {
-    console.log(response);
-  });
-};
+var loginFacebook = function loginFacebook() {};
 
 var habilitaEventos = function habilitaEventos() {
   $("#seePass").on('click', function () {
@@ -37792,6 +37788,7 @@ window.AppFuncionalidades = __webpack_require__(/*! ./Logged/AppFuncionalidades 
 
 window.languageDataTable = __webpack_require__(/*! ./Constants/language_dataTable */ "./resources/js/Constants/language_dataTable.js");
 window.AcessControl = __webpack_require__(/*! ./Constants/access_control */ "./resources/js/Constants/access_control.js");
+Pusher.logToConsole = true;
 
 /***/ }),
 

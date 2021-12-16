@@ -30,5 +30,9 @@ class AppServiceProvider extends ServiceProvider
     {
         $user = new User;
         $user->observe(UserObserver::class);
+
+        // \DB::listen(function($query){
+        //     var_dump($query->sql);
+        // });
     }
 }

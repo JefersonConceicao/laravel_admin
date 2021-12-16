@@ -23,13 +23,6 @@
     </head>
 
     <body class="hold-transition @yield('body_class') fixed">
-        <div id="fb-root"></div>
-        <script 
-            async defer crossorigin="anonymous" 
-            src="https://connect.facebook.net/pt_BR/sdk.js#xfbml=1&version=v11.0&appId=603145450664198&autoLogAppEvents=1" 
-            nonce="QdKIN1mQ"
-        ></script>
-
         @yield('body')
         <script src="{{ asset('vendor/adminlte/vendor/jquery/dist/jquery.min.js') }}"></script>
         <script src="{{ asset('vendor/adminlte/vendor/jquery/dist/jquery.slimscroll.min.js') }}"></script>
@@ -46,27 +39,8 @@
         @include('adminlte::plugins', ['type' => 'js'])
         @yield('adminlte_js')
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/i18n/pt-BR.js">  </script>
+        <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
         <script src="{{ asset('js/app.js')}}"> </script>
-        <script>
-            window.fbAsyncInit = function() {
-              FB.init({
-                appId            : '856630591610368',
-                autoLogAppEvents : true,
-                xfbml            : true,
-                version          : 'v2.11'
-              });
-
-                AppLogin.loginFacebook();
-            };
-          
-            (function(d, s, id){
-               var js, fjs = d.getElementsByTagName(s)[0];
-               if (d.getElementById(id)) {return;}
-               js = d.createElement(s); js.id = id;
-               js.src = "https://connect.facebook.net/en_US/sdk.js";
-               fjs.parentNode.insertBefore(js, fjs);
-             }(document, 'script', 'facebook-jssdk'));
-          </script>
     </body>
     
 </html>

@@ -33,13 +33,10 @@ class UserRequest extends FormRequest
             case 'store':
                 $validate = [
                     'name' => 'required',
-                    'username' => 'required',
                     'email' => 'required|unique:users,email|email',
                     'password' => 'required|min:8',
                     'confirm_password' => 'required| min:6 | same:password',
                     'role_user[].*' => 'required',
-                    'setor_id' => 'required',
-
                 ];
             break;
 

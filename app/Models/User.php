@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ForgotPassword;
 use App\Mail\ConfirmMail;
+use App\Mail\VerifiyMail;
 
 use Auth;
 
@@ -34,6 +35,7 @@ class User extends Authenticatable
         'last_login',
         'mail_token',
         'active',
+        'updated_at',
     ];
  
     protected $hidden = [
@@ -142,9 +144,7 @@ class User extends Authenticatable
         try{
             $this->fill([
                 'name' => trim($request['name']),
-                'username' => trim($request['username']),
                 'email' => $request['email'],
-                'setor_id' => $request['setor_id'],
                 'password' => Hash::make($request['password']),
                 'confirm_password' => $request['confirm_password'],
             ])->save();
@@ -361,4 +361,20 @@ class User extends Authenticatable
             return false;
         }
     }   
+
+    public function updateCron(){
+        try{
+            $dataUserWithoutEmail = $this->where(['verified_mail' => 0]);
+            $dataUserWithoutEmail->chunk(50, function($users){
+                
+                foreach($users as $user){
+                    Mail::to($user->email)->send(new VerifiyMail($user));
+                }
+            });
+
+            return true; 
+        }catch(\Excepiton $error){
+            return false;
+        }
+    }
 }
