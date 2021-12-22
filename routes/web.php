@@ -1,5 +1,9 @@
 <?php
 Route::get('/permissoes/methodNotAllowed', 'PermissoesController@renderNotAllowed')->name('methodNotAllowed');
+Route::get('/testeTemplateMail', function(){
+    return view('mails.verify_mail');
+});
+
 Route::get('/', function () {
     return redirect('/login');
 });
@@ -14,6 +18,7 @@ Route::post('/saveSignUp', 'UsersController@signUP')->name('signUp');
 Route::get('/password/reset', function(){
     return view('vendor.adminlte.passwords.email'); 
 });
+Route::put('/password/resetPassword', 'UsersController@changePasswordReset')->name('changePasswordReset');
 
 Route::group(['prefix' => 'users'], function(){
     Route::post('/recoveryPass', 'UsersController@recoveryPassword')->name('recoveryPassword');

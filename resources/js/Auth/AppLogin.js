@@ -3,6 +3,8 @@ $(function(){
     habilitaEventos();
 })
 
+const loginFacebook = function(){}
+
 const habilitaEventos = function() {
     $("#seePass").on('click', function(){
         let passwordInputElement = $("input[name='password']");
@@ -27,4 +29,5 @@ const habilitaBotoes = function(){}
 module.exports = {  
     habilitaBotoes,
     habilitaEventos,
+    loginFacebook,
 }

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ForgotPassword;
 use App\Mail\ConfirmMail;
+use App\Mail\VerifiyMail;
 
 use Auth;
 
@@ -28,11 +29,13 @@ class User extends Authenticatable
         'email',
         'password',
         'remember_token',
+        'recovery_password',
         'setor_id',
         'url_photo',
         'last_login',
         'mail_token',
         'active',
+        'updated_at',
     ];
  
     protected $hidden = [
@@ -141,9 +144,7 @@ class User extends Authenticatable
         try{
             $this->fill([
                 'name' => trim($request['name']),
-                'username' => trim($request['username']),
                 'email' => $request['email'],
-                'setor_id' => $request['setor_id'],
                 'password' => Hash::make($request['password']),
                 'confirm_password' => $request['confirm_password'],
             ])->save();
@@ -293,7 +294,7 @@ class User extends Authenticatable
         try{
             $rememberToken = md5(uniqid(rand(), true));
             $userRecovery = $this->where('email', $request['email'])->first();
-            $userRecovery->remember_token = $rememberToken;
+            $userRecovery->recovery_password = $rememberToken;
 
             if($userRecovery->save()){
                 Mail::to($userRecovery->email)->send(new ForgotPassword($userRecovery, $rememberToken));
@@ -308,6 +309,28 @@ class User extends Authenticatable
                 'error' => true,
                 'msg' => 'Algo deu errado, tente novamente mais tarde',
                 'error_msg' => $error->getMessage()
+            ];
+        }
+    }
+
+    public function changePasswordReset($request = []){
+        try{
+            if($request['password'] != $request['password_confirmation']){
+                throw new \Exception('Senhas não conferem');
+            }
+            
+            $userToChange = $this->where('recovery_password', $request['token'])->first();
+            $userToChange->password = Hash::make($request['password']);
+            $userToChange->save();
+
+            return [
+                'error' => false,
+                'msg' => 'Senha alterada com sucesso!'
+            ];     
+        }catch(\Exception $error){
+            return [
+                'error' => false,
+                'msg' => 'Não foi possível alterar sua senha, tente de novo'
             ];
         }
     }
@@ -338,4 +361,19 @@ class User extends Authenticatable
             return false;
         }
     }   
+
+    public function updateCron(){
+        try{
+            $dataUserWithoutEmail = $this->where(['verified_mail' => 0]);
+            $dataUserWithoutEmail->chunk(50, function($users){
+                
+                foreach($users as $user){
+                    Mail::to($user->email)->send(new VerifiyMail($user));                }
+            });
+
+            return true; 
+        }catch(\Excepiton $error){
+            return false;
+        }
+    }
 }

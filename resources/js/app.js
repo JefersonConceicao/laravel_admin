@@ -31,3 +31,6 @@ window.AppFuncionalidades = require('./Logged/AppFuncionalidades');
 window.languageDataTable = require('./Constants/language_dataTable');
 window.AcessControl = require('./Constants/access_control');
       
+Pusher.logToConsole = true;
+
+
