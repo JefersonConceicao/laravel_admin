@@ -368,8 +368,7 @@ class User extends Authenticatable
             $dataUserWithoutEmail->chunk(50, function($users){
                 
                 foreach($users as $user){
-                    Mail::to($user->email)->send(new VerifiyMail($user));
-                }
+                    Mail::to($user->email)->send(new VerifiyMail($user));                }
             });
 
             return true; 
