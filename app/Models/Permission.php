@@ -38,7 +38,7 @@ class Permission extends Model
     public function getPermissionsOrfas(){
         return $this
             ->select(
-                DB::raw('CONCAT(name, "*") as nameOrfa'),
+                DB::raw("CONCAT(name, '*') as nameOrfa"),
                 'id'
                 )
             ->whereRaw(

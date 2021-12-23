@@ -361,19 +361,4 @@ class User extends Authenticatable
             return false;
         }
     }   
-
-    public function updateCron(){
-        try{
-            $dataUserWithoutEmail = $this->where(['verified_mail' => 0]);
-            $dataUserWithoutEmail->chunk(50, function($users){
-                
-                foreach($users as $user){
-                    Mail::to($user->email)->send(new VerifiyMail($user));                }
-            });
-
-            return true; 
-        }catch(\Excepiton $error){
-            return false;
-        }
-    }
 }

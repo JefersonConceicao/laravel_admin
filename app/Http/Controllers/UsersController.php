@@ -35,8 +35,7 @@ class UsersController extends Controller
     }
 
     public function requestMailConfirm(UserRequest $request){
-        $user = new User;    
-
+        $user = new User;   
         try{
             $putToken = $user->putMailToken($request->email);
 

@@ -13,7 +13,6 @@ const changeTitle = function(){
 const habilitaEventos = function(){
     $("#searchUser").on('submit', function(e){
         e.preventDefault();
-        
         getUsersFilter();
     });
 
