@@ -13,6 +13,7 @@ use App\Models\FuncionalidadesPermission;
 class Permission extends Model
 {
     protected $table = "permissions";
+    protected $primaryKey = 'id';
     protected $fillable = [
         'name',
         'description',

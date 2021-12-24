@@ -51,6 +51,21 @@
     </div>
 
     <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                {{Form::label('perfil', 'Permissoes Individuais')}} <span class="required">  * </span>
+                {{ Form::select('permissions_user[]', [null => ''] + $permissions , [] ,[
+                    'class' => 'form-control multiselect',
+                    'id' => 'permission_create_user',
+                    'multiple' => 'multiple',
+                ])}}  
+
+                <div class="error_feedback"> </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
         <div class="col-md-6">
             <div class="form-group">
                 {{ Form::label('senha', 'Senha') }} <span class="required">  * </span>

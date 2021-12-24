@@ -30,6 +30,7 @@ class User extends Authenticatable
         'password',
         'remember_token',
         'recovery_password',
+        'email_verified_at',
         'setor_id',
         'url_photo',
         'last_login',
@@ -51,6 +52,12 @@ class User extends Authenticatable
 
     public function rolesByUser(){
         return $this->belongsToMany(Role::class);
+    }
+
+    public function userPermissions(){
+        return $this
+            ->belongsToMany(Permission::class, 'permissions_user', 'user_id', 'permission_id')
+            ->withTimestamps();
     }
 
     public function userSetor(){
@@ -177,6 +184,7 @@ class User extends Authenticatable
 
             if($objUser->update()){
                 $objUser->rolesByUser()->sync($request['role_user']);
+                $objUser->userPermissions()->sync($request['permissions_user']);
             }
 
             return [ 
@@ -283,11 +291,22 @@ class User extends Authenticatable
         }
     }
 
-    public function permissionsByUser(){
+    public function permissionsByUser(Object $user){
         $fRoles = new FuncionalidadesRole;
-        $roles = $this->rolesByUser()->pluck('roles.id')->toArray();
-        
-        return $fRoles->getPermissionsByRoles($roles);
+        $roles = $this
+            ->find($user->id)
+            ->rolesByUser()
+            ->pluck('roles.id')
+            ->toArray();
+
+        $permissionsUser = $this
+            ->find($user->id)
+            ->userPermissions()
+            ->pluck('name')
+            ->toArray();
+
+        $arrayPermissionsUser = array_merge($fRoles->getPermissionsByRoles($roles), $permissionsUser);
+        return $arrayPermissionsUser;
     }
 
     public function recoveryPasswordUser($request = []){
@@ -353,12 +372,12 @@ class User extends Authenticatable
     public function verifiedMail($token){
         try{
             $user = $this->where('mail_token', $token)->first();
-            $user->email_verified_at = date('Y-m-d H:i:s');
+            $user->email_verified_at = date("Y-m-d");
             $user->save();
 
             return true;
         }catch(\Exception $error){
-            return false;
+            dd($error->getMessage());
         }
     }   
 }

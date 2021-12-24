@@ -39,10 +39,11 @@ class LoginController extends Controller
             );
         }   
 
-        session(['user_permissions' => $modelUser->permissionsByUser()]);
+        $arrayPermissionsUser = $modelUser->permissionsByUser($user);
+        session(['user_permissions' => $arrayPermissionsUser]);
         $user->last_login = date('Y-m-d H:i:s'); 
         $user->save();
-    }
+    } 
 
     public function logout(){
         session()->flush();

@@ -40,8 +40,23 @@
     <div class="row">
         <div class="col-md-12">
             <div class="form-group">
-                {{Form::label('perfil', 'Perfis do Usuário')}} <span class="required">  * </span>
+                {{ Form::label('perfil', 'Perfis do Usuário')}} <span class="required">  * </span>
                 {{ Form::select('role_user[]', $roles , $selectedRoles ,[
+                    'class' => 'form-control multiselect',
+                    'id' => 'role_create_user',
+                    'multiple' => 'multiple',
+                ])}}  
+
+                <div class="error_feedback"> </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                {{Form::label('perfil', 'Perfis do Usuário')}} <span class="required">  * </span>
+                {{ Form::select('permissions_user[]', $permissions , $selectedPermissions ,[
                     'class' => 'form-control multiselect',
                     'id' => 'role_create_user',
                     'multiple' => 'multiple',

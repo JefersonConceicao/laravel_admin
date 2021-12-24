@@ -20,6 +20,10 @@ class UserObserver
         if($request->has('role_user')){
             $user->rolesByUser()->sync($request->role_user);
         }
+
+        if($request->has('permissions_user')){
+            $user->userPermissions()->sync($request->permissions_user);
+        }
     }
 
     /**
@@ -41,7 +45,7 @@ class UserObserver
      */
     public function deleted(User $user)
     {
-        //dd("user deleted");
+
     }
 
     /**
