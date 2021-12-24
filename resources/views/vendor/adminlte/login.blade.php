@@ -63,6 +63,12 @@
                     {{ session('success') }}
                 </div>
             @endif  
+            @if(!empty(session('error')))
+                <div class="alert alert-danger"> 
+                    {{ session('error') }}
+                    <p> <a href="/renderConfirmMail"> Solicitar confirmação de e-mail </a> </p>
+                </div>
+            @endif
             @if(!empty($errors->first('mail_verified_at')))
                 <div class="alert alert-danger" role="alert"> 
                     {{ $errors->first('mail_verified_at') }} 

@@ -11,6 +11,8 @@ use App\Models\User;
 use App\Models\Role;
 use App\Models\Setor;
 use App\Models\RoleUser;
+use App\Models\Permission;
+use App\Models\PermissionsUser;
 use Auth;
 
 //REQUESTS 
@@ -35,8 +37,7 @@ class UsersController extends Controller
     }
 
     public function requestMailConfirm(UserRequest $request){
-        $user = new User;    
-
+        $user = new User;   
         try{
             $putToken = $user->putMailToken($request->email);
 
@@ -112,13 +113,16 @@ class UsersController extends Controller
     {
         $role = new Role;
         $setor = new Setor;
-
+        $permissions = new Permission;
+            
         $optionsRoles = $role->getRoles()->pluck('name', 'id')->toArray();
         $optionsSetores = $setor->pluck('descsetor', 'id')->toArray();
-        
+        $optionsPermissions = $permissions->pluck('name', 'id')->toArray();
+
         return view('usuarios.create')
             ->with('roles', $optionsRoles)
-            ->with('setores', $optionsSetores);
+            ->with('setores', $optionsSetores)
+            ->with('permissions', $optionsPermissions);
     }
 
     public function store(UserRequest $request)
@@ -135,13 +139,19 @@ class UsersController extends Controller
         $setor = new Setor;
         $role = new Role;
         $userRole = new RoleUser;
+        $permissions = new Permission;
+        $permissionUser = new PermissionsUser;
+
+        $selectedPermissions = $permissionUser->getPermissionsUser($id)->pluck('permission_id')->toArray();
 
         return view('usuarios.edit')
             ->with('user', $user->find($id))
             ->with('roles', $role->getRoles()->pluck('name', 'id')->toArray())
             ->with('setores', $setor->pluck('descsetor', 'id')->toArray())
-            ->with('selectedRoles', $userRole->getRolesByUser($id)->pluck('role_id')->toArray());
-    }
+            ->with('selectedRoles', $userRole->getRolesByUser($id)->pluck('role_id')->toArray())
+            ->with('selectedPermissions', $selectedPermissions)
+            ->with('permissions', $permissions->pluck('name', 'id')->toArray());
+    } 
 
     public function update(UserRequest $request, $id)
     {   

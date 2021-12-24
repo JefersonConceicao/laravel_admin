@@ -40,6 +40,7 @@ Route::group(['middleware' => ['auth', 'verifyPermission']] , function(){
         Route::put('/changePassword', 'UsersController@changePassword')->name('changePassword');
         Route::post('/uploadPhotoProfile', 'UsersController@uploadPhotoProfile')->name('uploadPhotoProfile');
         Route::delete('/deleteAll', 'UsersController@deleteAll')->name('deleteAll');
+        Route::get('/notifications', 'UsersController@notifications')->name('notifications');
     });
 
     Route::group(['as' => 'permissoes::', 'prefix' => 'permissoes'], function(){
@@ -76,6 +77,6 @@ Route::group(['middleware' => ['auth', 'verifyPermission']] , function(){
         Route::delete('/delete/{id}', 'RolesController@delete')->name('delete');
     });
 });
-Auth::routes();
 
+Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');

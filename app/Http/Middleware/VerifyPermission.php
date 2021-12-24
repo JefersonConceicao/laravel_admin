@@ -23,12 +23,12 @@ class VerifyPermission
     public function handle($request, Closure $next)
     {   
         $permissao = new Permission;    
-        
+
         // if(!$permissao->permissionAuthorized(Route::currentRouteName())){
         //     if(!$request->ajax()){
-        //         abort(401);
+        //           abort(401);
         //     }else{
-        //         return response()->json(['msg' => 'Unauthorized'], 401);
+        //          return response()->json(['msg' => 'Unauthorized'], 401);
         //     }
         // }
 

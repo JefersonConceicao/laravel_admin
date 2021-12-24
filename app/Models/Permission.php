@@ -13,6 +13,7 @@ use App\Models\FuncionalidadesPermission;
 class Permission extends Model
 {
     protected $table = "permissions";
+    protected $primaryKey = 'id';
     protected $fillable = [
         'name',
         'description',
@@ -38,7 +39,7 @@ class Permission extends Model
     public function getPermissionsOrfas(){
         return $this
             ->select(
-                DB::raw('CONCAT(name, "*") as nameOrfa'),
+                DB::raw("CONCAT(name, '*') as nameOrfa"),
                 'id'
                 )
             ->whereRaw(
